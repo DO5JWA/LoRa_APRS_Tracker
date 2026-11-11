@@ -1,5 +1,37 @@
 # CA2RXU LoRa APRS Tracker/Station
+## DO5JWA Fork – Extended LoRa APRS Tracker
 
+This fork of the original LoRa APRS Tracker by Ricardo Guzman (CA2RXU) adds configurable LoRa transmit and receive settings and Bluetooth-related fixes.
+
+### Additional Features
+
+**Independent TX and RX Frequencies**
+- Configure separate LoRa frequencies for transmitting and receiving.
+- Supports operation with different transmit and receive channels.
+- Successfully tested with TX at 433.775 MHz and RX at 433.900 MHz on a TTGO T-Beam V1.1 with SX1276.
+
+**Independent LoRa Parameters**
+- Separate TX and RX spreading factor (SF) settings.
+- Separate TX and RX coding rate (CR) settings.
+- Separate TX and RX bandwidth (BW) settings.
+
+**Web Configuration**
+- Extended web configuration interface for the additional LoRa settings.
+
+**Bluetooth**
+- Bluetooth-related fixes for improved connectivity.
+
+### Project Status
+
+The modified firmware has been compiled, flashed and tested on a TTGO T-Beam V1.1 (SX1276). Basic transmit and receive operation with separate frequencies has been verified.
+
+Other hardware variants have not yet been verified.
+
+### Credits and License
+
+Based on the original LoRa APRS Tracker project by Ricardo Guzman (CA2RXU).
+
+This fork retains the original GPL-3.0 license. Please refer to the LICENSE file for details.
 This firmware is for using ESP32 based boards with LoRa Modules and GPS to live in the APRS world.
 
 ![Screenshot](https://github.com/richonguzman/LoRa_APRS_Tracker/blob/main/images/OledScreen2.jpeg)
