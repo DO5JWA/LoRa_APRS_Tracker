@@ -17,6 +17,16 @@ The complete image includes the bootloader, partition table, boot application da
 
 ## What's new in the DO5JWA fork?
 
+### Web Configuration – TX/RX Split Mode
+
+The extended web interface allows independent configuration of
+transmit and receive frequencies, spreading factors, coding rates
+and bandwidths.
+
+![DO5JWA TX/RX Split Mode](images/DO5JWA_TX_RX_Split_Mode.jpeg)
+
+*DO5JWA LoRa APRS Tracker – independent TX/RX configuration on a TTGO T-Beam V1.1.*
+
 - **Independent TX and RX frequencies:** Set different frequencies for transmitting and receiving.
 - **Independent spreading factors (SF):** Configure TX and RX separately.
 - **Independent coding rates (CR):** Configure TX and RX separately.
