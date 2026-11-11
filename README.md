@@ -1,61 +1,76 @@
-# CA2RXU LoRa APRS Tracker/Station
-## DO5JWA Fork – Extended LoRa APRS Tracker
+CA2RXU LoRa APRS Tracker/Station
+DO5JWA Fork – Extended LoRa APRS Tracker
+This fork of the original LoRa APRS Tracker by Ricardo Guzman (CA2RXU) adds independently configurable LoRa transmit and receive settings, an extended web configuration interface, and Bluetooth-related fixes.
+Firmware Download – TTGO T-Beam V1.1 (SX1276)
+Latest DO5JWA release: v1.0.0-DO5JWA (pre-release)
 
-This fork of the original LoRa APRS Tracker by Ricardo Guzman (CA2RXU) adds configurable LoRa transmit and receive settings and Bluetooth-related fixes.
+Download complete firmware (BIN)
 
-### Additional Features
+The complete image includes the ESP32 bootloader, partition table, boot application data, and application firmware. You can install it without compiling the project or installing PlatformIO.
+Easy Installation – Espressif ESP32 Flash Download Tool
+1. Download the complete DO5JWA firmware image linked above.
+2. Open the Espressif ESP32 Flash Download Tool.
+3. Select ESP32, Develop and UART.
+4. Select DO5JWA_LoRa_APRS_Tracker_v1.0.0_full.bin and enable its checkbox.
+5. Enter the flash address 0x0000. Leave the other file rows empty.
+6. Select SPI Speed: 40 MHz and SPI Mode: DIO.
+7. Connect your TTGO T-Beam V1.1 via USB and select its COM port.
+8. Set the baud rate to 115200 and click START.
+9. Wait until FINISH appears, then restart the T-Beam.
+Setting	Value
+Chip	ESP32
+Work Mode	Develop
+Load Mode	UART
+Flash address	0x0000
+SPI speed	40 MHz
+SPI mode	DIO
+Baud rate	115200
 
-**Independent TX and RX Frequencies**
+
+Tested: The complete image was successfully flashed using Espressif Flash Download Tool v3.9.11, and the device booted successfully on a TTGO T-Beam V1.1 with SX1276.
+
+Important: Back up your configuration before flashing. Flashing can overwrite device settings. The separate firmware.bin release asset is an application-only image and must not be flashed at 0x0000. It is intended for firmware-only updates using the appropriate update method. Other hardware variants have not yet been verified.
+Additional Features
+Independent TX and RX Frequencies
 - Configure separate LoRa frequencies for transmitting and receiving.
 - Supports operation with different transmit and receive channels.
 - Successfully tested with TX at 433.775 MHz and RX at 433.900 MHz on a TTGO T-Beam V1.1 with SX1276.
-
-**Independent LoRa Parameters**
+Independent LoRa Parameters
 - Separate TX and RX spreading factor (SF) settings.
 - Separate TX and RX coding rate (CR) settings.
 - Separate TX and RX bandwidth (BW) settings.
-
-**Web Configuration**
+Web Configuration
 - Extended web configuration interface for the additional LoRa settings.
-
-**Bluetooth**
+Bluetooth
 - Bluetooth-related fixes for improved connectivity.
-
-### Project Status
-
-The modified firmware has been compiled, flashed and tested on a TTGO T-Beam V1.1 (SX1276). Basic transmit and receive operation with separate frequencies has been verified.
+Project Status
+The modified firmware has been compiled, flashed and tested on a TTGO T-Beam V1.1 (SX1276). Basic transmit and receive operation with separate frequencies has been verified. The complete flash image has also been installed and boot-tested successfully.
 
 Other hardware variants have not yet been verified.
-
-### Credits and License
-
-Based on the original LoRa APRS Tracker project by Ricardo Guzman (CA2RXU).
+Credits and License
+Based on the original LoRa APRS Tracker by Ricardo Guzman (CA2RXU).
 
 This fork retains the original GPL-3.0 license. Please refer to the LICENSE file for details.
+Original CA2RXU Project Documentation
+The following information and historical notes originate from the upstream project. Upstream links and features do not necessarily refer to the modified DO5JWA firmware.
+
 This firmware is for using ESP32 based boards with LoRa Modules and GPS to live in the APRS world.
 
-![Screenshot](https://github.com/richonguzman/LoRa_APRS_Tracker/blob/main/images/OledScreen2.jpeg)
+(NOTE: To use Tx/Rx capabilities of this tracker you should have also an Tx/Rx <a href="https://github.com/richonguzman/LoRa_APRS_iGate" target="_blank">LoRa iGate</a> near you)
 
-__(NOTE: To use Tx/Rx capabilities of this tracker you should have also an Tx/Rx <a href="https://github.com/richonguzman/LoRa_APRS_iGate" target="_blank">LoRa iGate</a> near you)__
-<br />
 
-____________________________________________________
+You can support this project to continue to grow:
+<img src="https://github.com/richonguzman/LoRa_APRS_Tracker/blob/main/images/github-sponsors.png">     <img src="https://github.com/richonguzman/LoRa_APRS_Tracker/blob/main/images/paypalme.png">
 
-## You can support this project to continue to grow:
+Original CA2RXU Web Flasher / Installer
+Important: The original CA2RXU web flasher installs the upstream firmware, not this DO5JWA fork. To install the DO5JWA version, use the complete firmware download and the Espressif flashing instructions above.
 
-[<img src="https://github.com/richonguzman/LoRa_APRS_Tracker/blob/main/images/github-sponsors.png">](https://github.com/sponsors/richonguzman)     [<img src="https://github.com/richonguzman/LoRa_APRS_Tracker/blob/main/images/paypalme.png">](http://paypal.me/richonguzman)
-
-<br />
-
-# WEB FLASHER/INSTALLER is <a href="https://richonguzman.github.io/lora-tracker-web-flasher/installer.html" target="_blank">here</a>
-
-____________________________________________________
-
+Original upstream web flasher: <a href="https://richonguzman.github.io/lora-tracker-web-flasher/installer.html" target="_blank">here</a>
 - Tracker with complete MENU !!! (see Wiki to know how to access it)
-    - Read, Write and Delete Messages (with I2C Keyboard or Phone).
-    - Asking Weather Report.
-    - Listening to other Trackers arround.
-    - Changing Display Eco Mode (turn off after 4 seconds) and Screen Brightness.
+  - Read, Write and Delete Messages (with I2C Keyboard or Phone).
+  - Asking Weather Report.
+  - Listening to other Trackers arround.
+  - Changing Display Eco Mode (turn off after 4 seconds) and Screen Brightness.
 - Processor from 240Mhz to 80MHz to save almost 20% power consumption.
 - All GPS beacons/packets are encoded for less time on RF/LoRa Tx.
 - Oled Screen shows Altitude+Speed+Course or BME280 Wx Data or Number of New Messages Received.
@@ -66,25 +81,14 @@ ____________________________________________________
 - Wx data with BME280 Module showed on Screen and transmited as Wx Telemetry.
 - Winlink Mails through APRSLink.
 - Posibility to change between 3 major Frequencies used by LoRa APRS Worldwide.
-____________________________________________________
-
-# WIKI (English / Español)
-
-### FAQ: GPS, Bluetooth, Winlink, BME280 and more --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/00.-FAQ-(frequently-asked-questions)" target="_blank">here</a>
-
-### Supported Boards and buying links --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/1000.-Supported-Boards-and-Buying-Links" target="_blank">here</a>
-
-### 1. Installation Guide --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/01.-Installation-Guide-%23-Guia-de-Instalacion" target="_blank">here</a>
-
-### 2. Tracker Configuration and Explanation for each setting --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/02.-Tracker-Configuration--%23--Configuracion-del-Tracker" target="_blank">here</a>
-
-### 3. Upload Firmware and Filesystem --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/03.-Upload-Firmware-and-Filesystem-%23-Subir-Firmware-y-sistema-de-archivos" target="_blank">here</a>
-
-### 4. Tracker Menu Guide --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/04.-Menu-Guide-%23-Guía-del-menú" target="_blank">here</a>
-
-____________________________________________________
-## Timeline (Versions):
-
+WIKI (English / Español)
+FAQ: GPS, Bluetooth, Winlink, BME280 and more --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/00.-FAQ-(frequently-asked-questions)" target="_blank">here</a>
+Supported Boards and buying links --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/1000.-Supported-Boards-and-Buying-Links" target="_blank">here</a>
+1. Installation Guide --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/01.-Installation-Guide-%23-Guia-de-Instalacion" target="_blank">here</a>
+2. Tracker Configuration and Explanation for each setting --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/02.-Tracker-Configuration--%23--Configuracion-del-Tracker" target="_blank">here</a>
+3. Upload Firmware and Filesystem --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/03.-Upload-Firmware-and-Filesystem-%23-Subir-Firmware-y-sistema-de-archivos" target="_blank">here</a>
+4. Tracker Menu Guide --> <a href="https://github.com/richonguzman/LoRa_APRS_Tracker/wiki/04.-Menu-Guide-%23-Guía-del-menú" target="_blank">here</a>
+Timeline (Versions):
 - 2026-10-01 Hydra DIY board (ESP32 + GPS + 1W E22-400M30S) added. T-Beam V1.x (AXP192) with SX1262 added. Heltec Wireless Stick Lite V3 as TNC (no display) added.
 - 2026-09-30 CAD (Channel Activity Detection) added, GPS baud rate auto-detection, new Web UI, T-Beam 1W fan control and PA update, RPC Electronics MicroTracker added.
 - 2026-09-23 APRSPacketLib 1.0.7 update
@@ -184,13 +188,9 @@ ____________________________________________________
 - 2023.05.14 Adding Menu.
 - 2023.05.12 Saving Messages to Internal Memory.
 - 2023.04.16 Sending and Receiving LoRa Packets.
-
-____________________________________________________
-## This code was based on the work of :
+This code was based on the work of :
 - https://github.com/aprs434/lora.tracker : Serge - ON4AA on base91 byte-saving/encoding
 - https://github.com/lora-aprs/LoRa_APRS_Tracker : Peter - OE5BPA LoRa Tracker
 - https://github.com/Mane76/LoRa_APRS_Tracker : Manfred - DC2MH (Mane76) mods for multiple Callsigns and processor speed
 - https://github.com/dl9sau/TTGO-T-Beam-LoRa-APRS : Thomas - DL9SAU for the Kiss <> TNC2 lib
-____________________________________________________
-
-# Hope You Enjoy this, 73! CA2RXU, Valparaiso, Chile
+Hope You Enjoy this, 73! CA2RXU, Valparaiso, Chile
