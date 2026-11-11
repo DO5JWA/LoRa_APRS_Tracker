@@ -78,6 +78,16 @@ bool Configuration::writeFile() {
             data["lora"][i]["power"]                    = loraTypes[i].power;
         }
 
+        data["split"]["active"] = splitActive;
+        data["split"]["txFreq"] = splitTxFreq;
+        data["split"]["rxFreq"] = splitRxFreq;
+        data["split"]["txSF"] = splitTxSF;
+        data["split"]["rxSF"] = splitRxSF;
+        data["split"]["txCR"] = splitTxCR;
+        data["split"]["rxCR"] = splitRxCR;
+        data["split"]["txBW"] = splitTxBW;
+        data["split"]["rxBW"] = splitRxBW;
+
         data["battery"]["sendVoltage"]              = battery.sendVoltage;
         data["battery"]["voltageAsTelemetry"]       = battery.voltageAsTelemetry;
         data["battery"]["sendVoltageAlways"]        = battery.sendVoltageAlways;
@@ -190,6 +200,21 @@ bool Configuration::readFile() {
             bluetooth.useBLE            = true;    // fixed as BLE
             bluetooth.useKISS           = data["bluetooth"]["useKISS"] | true;    // true=KISS,  false=TNC2
         #endif
+
+        // Missing split settings in older JSON: retain safe defaults.
+        splitActive = data["split"]["active"] | true;
+        splitTxFreq = data["split"]["txFreq"] | 433775000L;
+        splitRxFreq = data["split"]["rxFreq"] | 433900000L;
+        splitTxSF = constrain((int)(data["split"]["txSF"] | 12), 7, 12);
+        splitRxSF = constrain((int)(data["split"]["rxSF"] | 12), 7, 12);
+        splitTxCR = constrain((int)(data["split"]["txCR"] | 5), 5, 8);
+        splitRxCR = constrain((int)(data["split"]["rxCR"] | 5), 5, 8);
+        splitTxBW = data["split"]["txBW"] | 125000L;
+        splitRxBW = data["split"]["rxBW"] | 125000L;
+        if (splitTxFreq < 137000000L || splitTxFreq > 1020000000L) splitTxFreq = 433775000L;
+        if (splitRxFreq < 137000000L || splitRxFreq > 1020000000L) splitRxFreq = 433900000L;
+        if (splitTxBW < 62500 || splitTxBW > 500000) splitTxBW = 125000;
+        if (splitRxBW < 62500 || splitRxBW > 500000) splitRxBW = 125000;
 
         JsonArray LoraTypesArray = data["lora"];
         for (int j = 0; j < LoraTypesArray.size(); j++) {
@@ -415,6 +440,9 @@ void Configuration::setDefaultValues() {
 }
 
 Configuration::Configuration() {
+    // SPIFFS wird erst nach dem Systemstart initialisiert.
+}
+void Configuration::begin() {
     if (!SPIFFS.begin(false)) {
         Serial.println("SPIFFS Mount Failed, formatting...");
 
@@ -423,6 +451,7 @@ Configuration::Configuration() {
             return;
         }
     }
+
     Serial.println("SPIFFS Ready");
 
     if (!SPIFFS.exists("/tracker_conf.json")) {

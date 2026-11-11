@@ -130,6 +130,16 @@ public:
     Telemetry               telemetry;
     Notification            notification;
     std::vector<LoraType>   loraTypes;
+    // Optional independent TX/RX parameters (split disabled = original profile).
+    bool    splitActive = true;
+    long    splitTxFreq = 433775000;
+    long    splitRxFreq = 433900000;
+    int     splitTxSF = 12;
+    int     splitRxSF = 12;
+    int     splitTxCR = 5;
+    int     splitRxCR = 5;
+    long    splitTxBW = 125000;
+    long    splitRxBW = 125000;
     PTT                     ptt;
     BLUETOOTH               bluetooth;
 
@@ -144,6 +154,7 @@ public:
     bool    disableGPS;
     bool    cadActive;
 
+    void begin();
     void setDefaultValues();
     bool writeFile();
     Configuration();

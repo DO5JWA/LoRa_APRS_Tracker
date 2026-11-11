@@ -139,9 +139,16 @@ namespace Utils {
     }
 
     String getSmartBeaconState() {
-        if (currentBeacon->smartBeaconActive) return "On";
+    if (currentBeacon == nullptr) {
         return "Off";
     }
+
+    if (currentBeacon->smartBeaconActive) {
+        return "On";
+    }
+
+    return "Off";
+}
 
     void checkFlashlight() {
         if (!Config.notification.ledFlashlight || Config.notification.ledFlashlightPin < 0) return;    // flashlight disabled or invalid pin: don't touch any pin

@@ -368,19 +368,41 @@ body{background:var(--msh-bg);color:var(--msh-text);font-family:"Inter",system-u
                         </div>
 </section>
 <section class="panel-section" id="sec-lora">
-                        <div class="row my-5 d-flex align-items-top">
-                            <div class="col-lg-3 col-sm-12">
-                                <h5>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16" > <path d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707m2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 1 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708m5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708m2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707zM10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0" /> </svg>
-                                    LoRa
-                                </h5>
-                                <small>Remember to match your boards posible Frequencies, SF, CR4.<br>Power: SX127X Max 20dBm / SX126X Max 22dBm.</small>
-                            </div>
-                            <div class="col-9">
-                                <div
-                                    id="lora-settings"
-                                    class="list-lora">
+                        <div class="row my-3">
+<div class="col-12">
+<h5 class="mb-3">LoRa</h5>
+                                <div class="mb-3">
+                                    <div class="form-check form-switch mb-3">
+                                        <input type="checkbox" class="form-check-input" name="split.active" id="split.active" checked>
+                                        <label class="form-check-label" for="split.active"><strong>TX / RX Split Mode</strong></label>
+                                    </div>
+                                    <div class="row g-4" id="split-parameters">
+<div class="col-md-6">
+  <div class="h-100">
+    <h6 class="mb-3">Receive (RX)</h6>
+    <div class="mb-3"><label class="form-label" for="split.rxFreq">Frequency (Hz)</label><input class="form-control" type="number" name="split.rxFreq" id="split.rxFreq" min="137000000" max="1020000000" required></div>
+    <div class="mb-3"><label class="form-label" for="split.rxSF">Spreading Factor</label><select class="form-select" name="split.rxSF" id="split.rxSF"><option value="7">SF7</option><option value="8">SF8</option><option value="9">SF9</option><option value="10">SF10</option><option value="11">SF11</option><option value="12">SF12</option></select></div>
+    <div class="mb-3"><label class="form-label" for="split.rxCR">Coding Rate (4/x)</label><select class="form-select" name="split.rxCR" id="split.rxCR"><option value="5">4/5</option><option value="6">4/6</option><option value="7">4/7</option><option value="8">4/8</option></select></div>
+    <div class="mb-3"><label class="form-label" for="split.rxBW">Bandwidth</label><select class="form-select" name="split.rxBW" id="split.rxBW"><option value="62500">62.5 kHz</option><option value="125000">125 kHz</option><option value="250000">250 kHz</option><option value="500000">500 kHz</option></select></div>
+  </div>
+</div>
+<div class="col-md-6">
+  <div class="h-100">
+    <h6 class="mb-3">Transmit (TX)</h6>
+    <div class="mb-3"><label class="form-label" for="split.txFreq">Frequency (Hz)</label><input class="form-control" type="number" name="split.txFreq" id="split.txFreq" min="137000000" max="1020000000" required></div>
+    <div class="mb-3"><label class="form-label" for="split.txSF">Spreading Factor</label><select class="form-select" name="split.txSF" id="split.txSF"><option value="7">SF7</option><option value="8">SF8</option><option value="9">SF9</option><option value="10">SF10</option><option value="11">SF11</option><option value="12">SF12</option></select></div>
+    <div class="mb-3"><label class="form-label" for="split.txCR">Coding Rate (4/x)</label><select class="form-select" name="split.txCR" id="split.txCR"><option value="5">4/5</option><option value="6">4/6</option><option value="7">4/7</option><option value="8">4/8</option></select></div>
+    <div class="mb-3"><label class="form-label" for="split.txBW">Bandwidth</label><select class="form-select" name="split.txBW" id="split.txBW"><option value="62500">62.5 kHz</option><option value="125000">125 kHz</option><option value="250000">250 kHz</option><option value="500000">500 kHz</option></select></div>
+  </div>
+</div>
+<div class="col-12"><small class="text-muted">Split off: standard LoRa profiles. Split on: separate RX/TX radio parameters. Transmit power is configured in the active profile.</small></div>
+                                    </div>
                                 </div>
+                                <details class="mt-4 border rounded p-3" id="advanced-lora-profiles">
+                                    <summary class="fw-semibold" style="cursor:pointer;">Advanced LoRa Profiles and TX Power</summary>
+                                    <p class="text-muted small mt-3 mb-2">Configure the original LoRa profiles, including transmit power, here. When split mode is enabled, the separate RX/TX radio parameters above take precedence.</p>
+                                    <div id="lora-settings" class="list-lora"></div>
+                                </details>
                                 <div class="form-check form-switch mt-3">
                                     <input
                                         type="checkbox"

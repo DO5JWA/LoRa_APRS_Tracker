@@ -100,6 +100,24 @@ namespace LoRa_Utils {
         }
     }
 
+    // Mirrored from the iGate split approach: apply complete TX/RX modem profiles.
+    void applyRadioMode(bool tx) {
+        long hz = tx ? Config.splitTxFreq : Config.splitRxFreq;
+        int sf = tx ? Config.splitTxSF : Config.splitRxSF;
+        int cr = tx ? Config.splitTxCR : Config.splitRxCR;
+        long bw = tx ? Config.splitTxBW : Config.splitRxBW;
+        if (!Config.splitActive) {
+            hz = currentLoRaType->frequency;
+            sf = currentLoRaType->spreadingFactor;
+            cr = currentLoRaType->codingRate4;
+            bw = currentLoRaType->signalBandwidth;
+        }
+        radio.setFrequency((float)hz / 1000000.0f);
+        radio.setSpreadingFactor(sf);
+        radio.setCodingRate(cr);
+        radio.setBandwidth((float)bw / 1000.0f);
+    }
+
     void changeFreq() {
         if(loraIndex >= (loraIndexSize - 1)) {
             loraIndex = 0;
@@ -108,12 +126,7 @@ namespace LoRa_Utils {
         }
         currentLoRaType = &Config.loraTypes[loraIndex];
 
-        float freq = (float)currentLoRaType->frequency/1000000;
-        radio.setFrequency(freq);
-        radio.setSpreadingFactor(currentLoRaType->spreadingFactor);
-        float signalBandwidth = currentLoRaType->signalBandwidth/1000;
-        radio.setBandwidth(signalBandwidth);
-        radio.setCodingRate(currentLoRaType->codingRate4);
+        applyRadioMode(false);
         setPower(currentLoRaType->power);
         #if defined(TTGO_T_BEAM_1W)
             radio.setPaRampTime(RADIOLIB_SX126X_PA_RAMP_800U);  // after setPower(): setOutputPower() resets the PA ramp time
@@ -155,7 +168,7 @@ namespace LoRa_Utils {
         #else
             SPI.begin(RADIO_SCLK_PIN, RADIO_MISO_PIN, RADIO_MOSI_PIN);
         #endif
-        float freq = (float)currentLoRaType->frequency/1000000;
+        float freq = (float)(Config.splitActive ? Config.splitRxFreq : currentLoRaType->frequency) / 1000000.0f;
         #if defined(RADIO_HAS_XTAL)
             radio.XTAL = true;
         #endif
@@ -212,6 +225,7 @@ namespace LoRa_Utils {
         #endif
 
         logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "LoRa", "LoRa init done!");
+        wakeRadio();
     }
 
     bool doCAD() {      // CAD (Channel Activity Detection)
@@ -291,11 +305,11 @@ namespace LoRa_Utils {
         #ifdef FAN_CTRL_PIN
             THERMAL_Utils::onTxStart();
         #endif
+        applyRadioMode(true);
         int state = radio.transmit("\x3c\xff\x01" + newPacket);
         #ifdef FAN_CTRL_PIN
             THERMAL_Utils::onTxEnd();
         #endif
-        transmitFlag = true;
         if (state == RADIOLIB_ERR_NONE) {
             //Serial.println(F("success!"));
         } else {
@@ -314,12 +328,19 @@ namespace LoRa_Utils {
             delay(Config.ptt.postDelay);
             digitalWrite(Config.ptt.io_pin, Config.ptt.reverse ? HIGH : LOW);
         }
+        // Nach der blockierenden Aussendung zurück auf Empfang
+        transmitFlag = false;
+        operationDone = false;
+        wakeRadio();
     }
 
     void wakeRadio() {
-        radio.startReceive();
+        applyRadioMode(false);
+        int rxState = radio.startReceive();
+        if (rxState != RADIOLIB_ERR_NONE) {
+            Serial.printf("RX start error: %d\n", rxState);
+        }
     }
-
     ReceivedLoRaPacket receiveFromSleep() {
         ReceivedLoRaPacket receivedLoraPacket;
         String packet = "";
@@ -347,8 +368,8 @@ namespace LoRa_Utils {
                 #if defined(TTGO_T_BEAM_1W)
                     digitalWrite(RADIO_RXEN, HIGH);
                 #endif
-                radio.startReceive();
-                transmitFlag = false;
+                wakeRadio();
+                        transmitFlag = false;
             } else {
                 int state = radio.readData(packet);
                 if (state == RADIOLIB_ERR_NONE) {
@@ -359,13 +380,16 @@ namespace LoRa_Utils {
                         receivedLoraPacket.snr        = radio.getSNR();
                         receivedLoraPacket.freqError  = radio.getFrequencyError();
                     }
-                } else {
-                    Serial.print(F("Rx failed, code "));   // 7 = CRC mismatch
-                    Serial.println(state);
-                }
+                            } else {
+                Serial.print(F("Rx failed, code "));
+                Serial.println(state);
             }
+
+            // Empfang nach einem Paket erneut starten
+            wakeRadio();
         }
-        return receivedLoraPacket;
+    }
+    return receivedLoraPacket;
     }
 
     void sleepRadio() {

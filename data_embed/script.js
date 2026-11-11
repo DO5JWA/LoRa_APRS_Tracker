@@ -212,6 +212,19 @@ function loadSettings(settings) {
     BluetoothUseBle.disabled        = !BluetoothActiveCheckbox.checked;
     BluetoothUseKiss.disabled       = !BluetoothActiveCheckbox.checked;
 
+    // SPLIT: independent iGate-style TX and RX radio settings.
+    const split = settings.split || {active:true,txFreq:433775000,rxFreq:433900000,txSF:12,rxSF:12,txCR:5,rxCR:5,txBW:125000,rxBW:125000};
+    document.getElementById("split.active").checked = !!split.active;
+    for (const field of ["txFreq","rxFreq","txSF","rxSF","txCR","rxCR","txBW","rxBW"]) {
+        document.getElementById("split." + field).value = split[field];
+    }
+    const updateSplitUI = () => {
+        const enabled = document.getElementById("split.active").checked;
+        document.querySelectorAll("#split-parameters input, #split-parameters select").forEach(el => el.disabled = !enabled);
+    };
+    document.getElementById("split.active").addEventListener("change", updateSplitUI);
+    updateSplitUI();
+
     // LORA
     const loraContainer = document.getElementById("lora-settings");
     loraContainer.innerHTML = ""; // Clear previous content

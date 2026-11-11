@@ -81,10 +81,10 @@ TinyGPSPlus                         gps;
 
 uint8_t     myBeaconsIndex          = 0;
 int         myBeaconsSize           = Config.beacons.size();
-Beacon      *currentBeacon          = &Config.beacons[myBeaconsIndex];
+Beacon      *currentBeacon          = nullptr;
 uint8_t     loraIndex               = 0;
 int         loraIndexSize           = Config.loraTypes.size();
-LoraType    *currentLoRaType        = &Config.loraTypes[loraIndex];
+LoraType    *currentLoRaType        = nullptr;
 
 int         menuDisplay             = 100;
 uint32_t    menuTime                = millis();
@@ -126,6 +126,19 @@ extern bool gpsIsActive;
 
 void setup() {
     Serial.begin(115200);
+
+    Config.begin();
+    // Config is loaded only here, never during global variable initialization.
+    myBeaconsSize = Config.beacons.size();
+    loraIndexSize = Config.loraTypes.size();
+    if (myBeaconsSize == 0 || loraIndexSize == 0) {
+        Serial.println("Configuration error: no beacon or LoRa profiles");
+        while (true) delay(1000);
+    }
+    currentBeacon = &Config.beacons[0];
+    currentLoRaType = &Config.loraTypes[0];
+    bluetoothActive = Config.bluetooth.active;
+    displayEcoMode = Config.display.ecoMode;
 
     #ifndef DEBUG
         logger.setDebugLevel(logging::LoggerLevel::LOGGER_LEVEL_INFO);

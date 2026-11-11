@@ -207,6 +207,17 @@ namespace WEB_Utils {
             Config.loraTypes[i].power           = LoRa_Utils::validPower(getParamIntSafe("lora." + String(i) + ".power", Config.loraTypes[i].power));  // saved as the power the radio chip really uses
         }
 
+        // Independent TX/RX LoRa split (iGate-style settings).
+        Config.splitActive = request->hasParam("split.active", true);
+        Config.splitTxFreq = constrain((long)getParamDoubleSafe("split.txFreq", Config.splitTxFreq), 137000000L, 1020000000L);
+        Config.splitRxFreq = constrain((long)getParamDoubleSafe("split.rxFreq", Config.splitRxFreq), 137000000L, 1020000000L);
+        Config.splitTxSF = constrain(getParamIntSafe("split.txSF", Config.splitTxSF), 7, 12);
+        Config.splitRxSF = constrain(getParamIntSafe("split.rxSF", Config.splitRxSF), 7, 12);
+        Config.splitTxCR = constrain(getParamIntSafe("split.txCR", Config.splitTxCR), 5, 8);
+        Config.splitRxCR = constrain(getParamIntSafe("split.rxCR", Config.splitRxCR), 5, 8);
+        Config.splitTxBW = constrain(getParamIntSafe("split.txBW", Config.splitTxBW), 62500, 500000);
+        Config.splitRxBW = constrain(getParamIntSafe("split.rxBW", Config.splitRxBW), 62500, 500000);
+
         //  Battery
         Config.battery.sendVoltage              = request->hasParam("battery.sendVoltage", true);
         if (Config.battery.sendVoltage) {
